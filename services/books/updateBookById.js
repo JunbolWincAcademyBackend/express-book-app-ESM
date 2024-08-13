@@ -1,22 +1,36 @@
-//import bookData from '../../data/books.json' assert { type: 'json' };
-const bookData = require('../../data/books.json');
+//import booksData from '../../data/books.json' assert { type: 'json' };
+
+import fs from 'fs';
+import path from 'path';
+
+// Resolving the path to the JSON file
+const filePath = path.resolve('data/books.json');
 
 const updateBookById = (id, title, author, isbn, pages, available, genre) => {
-  const book = bookData.books.find((book) => book.id === id);
+  // Load the JSON file synchronously
+  const booksData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+
+  const book = booksData.books.find((book) => book.id === id);
 
   if (!book) {
-    throw new Error(`book with id ${id} was not found!`);
+    throw new Error(`Book with id ${id} was not found!`);
   }
 
-  book.title = title ?? book.title; // This ‘??’ is the Nullish Coalescing Operator. it's a handy tool that lets you pick between two values. value1 ?? value2. If value1 (the new value) is defined and not null, it will be chosen. If value1 is either undefined or null, value2 (the original) will be chosen instead.
+  // Update the book's properties using the Nullish Coalescing Operator
+  book.title = title ?? book.title;
   book.author = author ?? book.author;
   book.isbn = isbn ?? book.isbn;
   book.pages = pages ?? book.pages;
   book.available = available ?? book.available;
   book.genre = genre ?? book.genre;
 
+  // Write the updated books array back to the books.json file
+  fs.writeFileSync(filePath, JSON.stringify(booksData, null, 2)); // Write the data with indentation
+
   return book;
 };
 
-// export default updateBookById;
-module.exports = updateBookById;
+export default updateBookById;
+
+
+

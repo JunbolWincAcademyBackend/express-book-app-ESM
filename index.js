@@ -9,9 +9,6 @@ import * as Sentry from '@sentry/node';
 
 
 
-dotenv.config(); // This is how you import .env variables in CommonJS
-
-
 const app = express(); //Creates an instance of Express (app) Think of the app object in Express as the central hub of our application. It's like the manager of a restaurant, keeping track of everything that goes on. It's where we set up all our routes and middleware (don't worry, we'll talk more about what these are soon!). You can name this object whatever you want, but most people stick with app - it's a bit of a tradition in Express.
 
 /*
@@ -86,12 +83,12 @@ app.get('/', (req, res) => {
 // this version didnt work:
 //app.use(Sentry.Handlers.errorHandler());
 
-// correct version:
+// correct version:// Attach the error handler for Sentry (if available) - Must be before any other error handling middleware
 if (typeof Sentry.Handlers?.errorHandler === 'function') {
   app.use(Sentry.Handlers.errorHandler());
 }
 
-
+// Attach your custom error handler middleware after Sentry's error handler
 app.use(errorHandler);
 
 app.listen(3000, () => {

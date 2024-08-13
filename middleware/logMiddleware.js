@@ -1,6 +1,4 @@
-// import logger from '../utils/log.js'
-const logger = require('../utils/log.js');
-
+import logger from '../utils/log.js'
 
 const log = (req, res, next) => {
   const start = new Date()
@@ -11,5 +9,5 @@ const log = (req, res, next) => {
   logger.info(`${req.method} ${req.originalUrl}. Status: ${res.statusCode}. Duration: ${ms} ms`)
 }
 
-// export default log;
-module.exports = log;
+export default log;
+

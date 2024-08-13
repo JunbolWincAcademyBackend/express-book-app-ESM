@@ -1,22 +1,14 @@
-// import express from 'express';
-// import getRecords from '../services/records/getRecords.js';
-// import getRecordById from '../services/records/getRecordById.js';
-// import createRecord from '../services/records/createRecord.js';
-// import updateRecordById from '../services/records/updateRecordById.js';
-// import deleteRecord from '../services/records/deleteRecord.js';
+import express from 'express';
+import getRecords from '../services/records/getRecords.js';
+import getRecordById from '../services/records/getRecordById.js';
+import createRecord from '../services/records/createRecord.js';
+import updateRecordById from '../services/records/updateRecordById.js';
+import deleteRecord from '../services/records/deleteRecord.js';
 // // import authMiddleware from '../middleware/auth.js';
-// import authMiddleware from '../middleware/advancedAuth.js';
-// import getAuthToken from '../utils/getAuthToken.js'; // ✅ Import token utility function
+import authMiddleware from '../middleware/advancedAuth.js';
+import getAuthToken from '../utils/getAuthToken.js'; // ✅ Import token utility function
 
-const express = require('express');
-const getRecords = require('../services/records/getRecords.js');
-const getRecordById = require('../services/records/getRecordById.js');
-const createRecord = require('../services/records/createRecord.js');
-const updateRecordById = require('../services/records/updateRecordById.js');
-const deleteRecord = require('../services/records/deleteRecord.js');
-// const authMiddleware = require('../middleware/auth.js');
-const authMiddleware = require('../middleware/advancedAuth.js');
-const getAuthToken = require('../utils/getAuthToken.js'); // ✅ Import token utility function
+
 
 
 //Create a router instance
@@ -122,7 +114,6 @@ recordsRouter.delete('/:id', authMiddleware, async (req, res) => {
     res.status(500).send('Something went wrong while deleting Record by id!');
   }
 });
+export default recordsRouter;
 
-// export default recordsRouter;
-module.exports = recordsRouter;
 

@@ -1,17 +1,19 @@
-//import booksData from '../data/books.json' //assert { type: 'json' };
-const booksData = require('../../data/books.json');
-// import fs from 'fs';
-// import path from 'path';
-// import getAuthToken from '../utils/getAuthToken.js';
+// import booksData from '../../data/books.json' assert { type: 'json' };
 
-const fs = require('fs');
-const path = require('path');
-const getAuthToken = require('../utils/getAuthToken.js'); // Adjust the path if needed
+import fs from 'fs';
+import path from 'path';
+import getAuthToken from '../utils/getAuthToken.js';
 
 async function updateBook(bookId, updatedBookData) {
   try {
     const token = await getAuthToken(); // Request a new token
     console.log('Token received:', token); // Log the token (optional)
+
+    // Resolving the path to the books.json file
+    const booksFilePath = path.resolve('data/books.json');
+
+    // Load the JSON file synchronously
+    const booksData = JSON.parse(fs.readFileSync(booksFilePath, 'utf8'));
 
     const bookIndex = booksData.books.findIndex((book) => book.id === bookId);
 
@@ -27,7 +29,6 @@ async function updateBook(bookId, updatedBookData) {
     booksData.books[bookIndex] = updatedBook;
 
     // Write the updated books array back to the books.json file
-    const booksFilePath = path.resolve('data/books.json');
     fs.writeFileSync(booksFilePath, JSON.stringify(booksData, null, 2));
 
     console.log('Book updated:', updatedBook); // Log the updated book
@@ -48,3 +49,4 @@ const updatedBookData = {
 };
 
 updateBook(bookId, updatedBookData);
+

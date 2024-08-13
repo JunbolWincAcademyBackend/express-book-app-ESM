@@ -1,27 +1,17 @@
-// import express from 'express';
-// import getBooks from '../services/books/getBooks.js'; // dont forget to write the correct path with ../
-// import getBookById from '../services/books/getBookById.js';
-// import createBook from '../services/books/createBook.js';
-// import updateBookById from '../services/books/updateBookById.js';
-// import deleteBook from '../services/books/deleteBook.js';
-// // import authMiddleware from '../middleware/auth.js';// I am not using this auth.js logic
-// import authMiddleware from '../middleware/advancedAuth.js';
-// import getAuthToken from '../utils/getAuthToken.js'; // ✅ Import the token utility function
-
-const express = require('express');
-const getBooks = require('../services/books/getBooks.js'); // Ensure the correct path with ../
-const getBookById = require('../services/books/getBookById.js');
-const createBook = require('../services/books/createBook.js');
-const updateBookById = require('../services/books/updateBookById.js');
-const deleteBook = require('../services/books/deleteBook.js');
-const authMiddleware = require('../middleware/advancedAuth.js');
-const getAuthToken = require('../utils/getAuthToken.js'); // ✅ Import the token utility function
-
+import express from 'express';
+import getBooks from '../services/books/getBooks.js'; // don't forget to write the correct path with ../
+import getBookById from '../services/books/getBookById.js';
+import createBook from '../services/books/createBook.js';
+import updateBookById from '../services/books/updateBookById.js';
+import deleteBook from '../services/books/deleteBook.js';
+//import authMiddleware from '../middleware/auth.js'; // I am not using this auth.js logic
+import authMiddleware from '../middleware/advancedAuth.js';
+import getAuthToken from '../utils/getAuthToken.js'; // ✅ Import the token utility function
 
 const booksRouter = express.Router(); //Create a router instance
 
 // This is defining a route handler in your Express application, specifically for handling GET requests to the root path ('/') of this router.
-booksRouter.get('/', (req, res) => { 
+booksRouter.get('/', (req, res) => {
   try {
     const books = getBooks(); // Fetch the books from the database getBooks will return books which are all the books in the database
     res.status(200).json(books); // Converting data array object 'books' into JSON
@@ -32,7 +22,7 @@ booksRouter.get('/', (req, res) => {
 });
 
 //-- using GET Method to add a new route based on id:
-booksRouter.get('/:id',(req, res) => { 
+booksRouter.get('/:id', (req, res) => {
   try {
     const { id } = req.params; // Extract the ID from the URL. This uses JavaScript's object destructuring feature.
     const book = getBookById(id);
@@ -49,7 +39,8 @@ booksRouter.get('/:id',(req, res) => {
 });
 
 //-- using POST Method to add a new book to the database with a new id added:
-booksRouter.post('/', authMiddleware, async (req, res) => { // ✅ Make the handler async so you can use the promise from getAuthToken
+booksRouter.post('/', authMiddleware, async (req, res) => {
+  // ✅ Make the handler async so you can use the promise from getAuthToken
   try {
     const token = await getAuthToken(); // ✅ Request a new token
     console.log('Token received:', token); // ✅ Log the token (optional)
@@ -64,7 +55,8 @@ booksRouter.post('/', authMiddleware, async (req, res) => { // ✅ Make the hand
 });
 
 //-- using PUT Method to edit or change a book's title, author, etc:
-booksRouter.put('/:id', authMiddleware, async (req, res) => { // ✅ Make the handler async
+booksRouter.put('/:id', authMiddleware, async (req, res) => {
+  // ✅ Make the handler async
   try {
     const token = await getAuthToken(); // ✅ Request a new token
     console.log('Token received:', token); // ✅ Log the token (optional)
@@ -80,7 +72,8 @@ booksRouter.put('/:id', authMiddleware, async (req, res) => { // ✅ Make the ha
 });
 
 //-- using DELETE Method to delete a book
-booksRouter.delete('/:id', authMiddleware, async (req, res) => { // ✅ Make the handler async
+booksRouter.delete('/:id', authMiddleware, async (req, res) => {
+  // ✅ Make the handler async
   try {
     const token = await getAuthToken(); // ✅ Request a new token
     console.log('Token received:', token); // ✅ Log the token (optional)
@@ -101,6 +94,4 @@ booksRouter.delete('/:id', authMiddleware, async (req, res) => { // ✅ Make the
   }
 });
 
-// export default booksRouter;
-module.exports = booksRouter;
-
+export default booksRouter;

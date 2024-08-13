@@ -16,7 +16,7 @@ async function getAuthToken() {
     return data.access_token;
 }
 
-//export default getAuthToken;
-module.exports = getAuthToken;
+export default getAuthToken;
+
 
 

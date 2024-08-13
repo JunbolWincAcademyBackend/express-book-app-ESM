@@ -1,11 +1,7 @@
 // addBook.js
-// import getAuthToken from '../utils/getAuthToken.js'; // Adjust the path if needed
-// import createBook from '../services/books/createBook.js'; // Adjust the path if needed
-// import { v4 as uuid } from 'uuid'; // ✅ Import uuid to generate unique IDs
-
-const getAuthToken = require('../utils/getAuthToken.js'); // Adjust the path if needed
-const createBook = require('../services/books/createBook.js'); // Adjust the path if needed
-const { v4: uuid } = require('uuid'); // ✅ Import uuid to generate unique IDs
+import getAuthToken from '../utils/getAuthToken.js'; // Adjust the path if needed
+import createBook from '../services/books/createBook.js'; // Adjust the path if needed
+import { v4 as uuid } from 'uuid'; // ✅ Import uuid to generate unique IDs
 
 async function addBook() {
   try {

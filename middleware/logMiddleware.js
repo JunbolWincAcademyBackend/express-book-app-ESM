@@ -1,13 +1,23 @@
-import logger from '../utils/log.js'
+import logger from '../utils/log.js';
+
+// Middleware to log requests
+
 
 const log = (req, res, next) => {
-  const start = new Date()
+  // Capture the start time of the request
+  const start = new Date();
 
-  next()
+  // Call the next middleware or route handler
+  next();
 
-  const ms = new Date() - start
-  logger.info(`${req.method} ${req.originalUrl}. Status: ${res.statusCode}. Duration: ${ms} ms`)
-}
+  // Calculate how long the request took to process
+  const ms = new Date() - start;
 
+  // Log the request method, URL, status code, and duration
+  logger.info(`${req.method} ${req.originalUrl}. Status: ${res.statusCode}. Duration: ${ms} ms`);
+};
+
+// Export the middleware function for use in your app
 export default log;
+
 

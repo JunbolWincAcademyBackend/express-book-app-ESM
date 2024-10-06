@@ -1,36 +1,40 @@
 import { Router } from 'express';
-import jwt from 'jsonwebtoken';
-import fs from 'fs';
-import path from 'path';
+import axios from 'axios'; // We'll use axios to communicate with Auth0
 
-// Resolving the path to the users.json file
-const usersFilePath = path.resolve('data/users.json');
+const router = Router();
 
-// Load the JSON file synchronously
-const userData = JSON.parse(fs.readFileSync(usersFilePath, 'utf8'));
-
-const router = Router(); // Naming the router instance 'router' in Express is a common convention because it is generic and can be reused across different files. When you import and use this router in your main server file 'index.js', you typically give it a more descriptive name (like loginRouter) when necessary to avoid confusion.
-
-router.post('/', (req, res) => {
-  // This defines what happens when a POST request is made to the '/login' route
-  const secretKey = process.env.AUTH_SECRET_KEY || 'my-secret-key'; // to create the secretKey we use .env which create an environment variable (which creates a random string) which comes from the runtime environment.
+// POST route for login using Auth0
+router.post('/', async (req, res) => {
   const { username, password } = req.body;
-  const { users } = userData; // using object destructuring.
-  const user = users.find((u) => u.username === username && u.password === password);
 
-  if (!user) {
-    return res.status(401).json({ message: 'Invalid credentials!' });
+  // Auth0 credentials from .env
+  const clientId = process.env.AUTH0_CLIENT_ID;
+  const clientSecret = process.env.AUTH0_CLIENT_SECRET;
+  const authDomain = process.env.AUTH0_DOMAIN; // Auth0 domain from .env
+  const audience = process.env.AUTH0_AUDIENCE;
+
+  try {
+    // Make a request to Auth0 to get an access token
+    const response = await axios.post(`https://${authDomain}/oauth/token`, {
+      grant_type: 'password',
+      username: username,
+      password: password,
+      client_id: clientId,
+      client_secret: clientSecret,
+      audience: audience 
+
+    });
+
+    // Extract the access token from the Auth0 response
+    const { access_token } = response.data;
+
+    // Return the token to the client
+    res.status(200).json({ message: 'Successfully logged in!', token: access_token });
+
+  } catch (error) {
+    console.error('Error during authentication', error);
+    return res.status(401).json({ message: 'Invalid credentials or login error!' });
   }
-
-  const token = jwt.sign({ userId: user.id }, secretKey);
-  res.status(200).json({ message: 'Successfully logged in!', token });
 });
 
 export default router;
-
-
-
-
-
-
-

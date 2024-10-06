@@ -12,7 +12,7 @@ const authMiddleware = (req, res, next) => {
     return res.status(401).json({ message: 'You cannot access this operation without a token!' });
   }
 
-  jwt.verify(token, secretKey, (err, decoded) => {
+  jwt.verify(token, secretKey, (err, decoded) => {//jwt.verify(token, secretKey) is the key part where the token received in the request header is verified using the secret key.
     if (err) {
       return res.status(403).json({ message: 'Invalid token provided!' });
     }

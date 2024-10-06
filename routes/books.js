@@ -1,96 +1,94 @@
 import express from 'express';
-import getBooks from '../services/books/getBooks.js'; // don't forget to write the correct path with ../
-import getBookById from '../services/books/getBookById.js';
-import createBook from '../services/books/createBook.js';
-import updateBookById from '../services/books/updateBookById.js';
-import deleteBook from '../services/books/deleteBook.js';
-//import authMiddleware from '../middleware/auth.js'; // I am not using this auth.js logic
-import authMiddleware from '../middleware/advancedAuth.js';
-import getAuthToken from '../utils/getAuthToken.js'; // ✅ Import the token utility function
+import getBooks from '../../services/books/getBooks.js'; // Corrected path
+import getBookById from '../../services/books/getBookById.js'; // Corrected path
+import createBook from '../../services/books/createBook.js'; // Corrected path
+import updateBookById from '../../services/books/updateBookById.js'; // Corrected path
+import deleteBook from '../../services/books/deleteBook.js'; // Corrected path
+import authMiddleware from '../../middleware/advancedAuth.js'; // Corrected path
+import getAuthToken from '../../utils/getAuthToken.js'; // Corrected path
+import NotFoundError from '../../errors/NotFoundError.js'; // Corrected path
 
-const booksRouter = express.Router(); //Create a router instance
+const booksRouter = express.Router();
 
-// This is defining a route handler in your Express application, specifically for handling GET requests to the root path ('/') of this router.
-booksRouter.get('/', (req, res) => {
+// Route to get all books
+booksRouter.get('/', (req, res, next) => {
   try {
-    const books = getBooks(); // Fetch the books from the database getBooks will return books which are all the books in the database
-    res.status(200).json(books); // Converting data array object 'books' into JSON
+    const books = getBooks();
+    res.status(200).json(books);
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Something went wrong while getting list of books!');
+    next(error);
   }
 });
 
-//-- using GET Method to add a new route based on id:
-booksRouter.get('/:id', (req, res) => {
+// Route to get a book by ID
+booksRouter.get('/:id', (req, res, next) => {
   try {
-    const { id } = req.params; // Extract the ID from the URL. This uses JavaScript's object destructuring feature.
+    const { id } = req.params;
     const book = getBookById(id);
 
     if (!book) {
-      res.status(404).send(`Book with id ${id} was not found!`); // Use the standard 404 status code if the book cannot be found.
-    } else {
-      res.status(200).json(book);
+      throw new NotFoundError('Book', id);
     }
+
+    res.status(200).json(book);
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Something went wrong while getting book by id!');
+    next(error);
   }
 });
 
-//-- using POST Method to add a new book to the database with a new id added:
-booksRouter.post('/', authMiddleware, async (req, res) => {
-  // ✅ Make the handler async so you can use the promise from getAuthToken
+// Route to create a new book
+booksRouter.post('/', authMiddleware, async (req, res, next) => {
   try {
-    const token = await getAuthToken(); // ✅ Request a new token
-    console.log('Token received:', token); // ✅ Log the token (optional)
+    const token = await getAuthToken();
+    console.log('Token received:', token);
 
-    const { title, author, isbn, pages, available, genre } = req.body; // req.body is the request object property that stores the JSON payload we expect the client to pass to this route.
+    const { title, author, isbn, pages, available, genre } = req.body;
     const newBook = createBook(title, author, isbn, pages, available, genre);
+
     res.status(201).json(newBook);
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Something went wrong while creating new book!');
+    next(error);
   }
 });
 
-//-- using PUT Method to edit or change a book's title, author, etc:
-booksRouter.put('/:id', authMiddleware, async (req, res) => {
-  // ✅ Make the handler async
+// Route to update a book by ID
+booksRouter.put('/:id', authMiddleware, async (req, res, next) => {
   try {
-    const token = await getAuthToken(); // ✅ Request a new token
-    console.log('Token received:', token); // ✅ Log the token (optional)
+    const token = await getAuthToken();
+    console.log('Token received:', token);
 
-    const { id } = req.params; // To get the route of the book (book's name)
-    const { title, author, isbn, pages, available, genre } = req.body; // This is to get the new JSON data that we PUT using Postman.
+    const { id } = req.params;
+    const { title, author, isbn, pages, available, genre } = req.body;
     const updatedBook = updateBookById(id, title, author, isbn, pages, available, genre);
+
+    if (!updatedBook) {
+      throw new NotFoundError('Book', id);
+    }
+
     res.status(200).json(updatedBook);
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Something went wrong while updating book by id!');
+    next(error);
   }
 });
 
-//-- using DELETE Method to delete a book
-booksRouter.delete('/:id', authMiddleware, async (req, res) => {
-  // ✅ Make the handler async
+// Route to delete a book by ID
+booksRouter.delete('/:id', authMiddleware, async (req, res, next) => {
   try {
-    const token = await getAuthToken(); // ✅ Request a new token
-    console.log('Token received:', token); // ✅ Log the token (optional)
+    const token = await getAuthToken();
+    console.log('Token received:', token);
 
     const { id } = req.params;
     const deletedBookId = deleteBook(id);
 
     if (!deletedBookId) {
-      res.status(404).send(`Book with id ${id} was not found!`);
-    } else {
-      res.status(200).json({
-        message: `Book with id ${deletedBookId} was deleted!`,
-      });
+      throw new NotFoundError('Book', id);
     }
+
+    res.status(200).json({
+      message: `Book with id ${deletedBookId} was deleted!`,
+    });
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Something went wrong while deleting book by id!');
+    next(error);
   }
 });
 

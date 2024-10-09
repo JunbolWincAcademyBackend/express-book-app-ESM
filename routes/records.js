@@ -1,12 +1,12 @@
 import express from 'express';
-import getRecords from '../../services/records/getRecords.js'; // Corrected path
-import getRecordById from '../../services/records/getRecordById.js'; // Corrected path
-import createRecord from '../../services/records/createRecord.js'; // Corrected path
-import updateRecordById from '../../services/records/updateRecordById.js'; // Corrected path
-import deleteRecord from '../../services/records/deleteRecord.js'; // Corrected path
-import authMiddleware from '../../middleware/advancedAuth.js'; // Corrected path
-import getAuthToken from '../../utils/getAuthToken.js'; // Corrected path
-import NotFoundError from '../../errors/NotFoundError.js'; // Corrected path
+import getRecords from '../services/records/getRecords.js'; // Corrected path
+import getRecordById from '../services/records/getRecordById.js'; // Corrected path
+import createRecord from '../services/records/createRecord.js'; // Corrected path
+import updateRecordById from '../services/records/updateRecordById.js'; // Corrected path
+import deleteRecord from '../services/records/deleteRecord.js'; // Corrected path
+import authMiddleware from '../middleware/advancedAuth.js'; // Corrected path
+import getAuthToken from '../utils/getAuthToken.js'; // Corrected path
+import NotFoundError from '../errors/NotFoundError.js'; // Corrected path
 
 // Create a router instance
 const recordsRouter = express.Router();

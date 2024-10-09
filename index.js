@@ -30,10 +30,18 @@ Sentry.init({
   environment: process.env.NODE_ENV || 'development', // Set environment from .env or fallback to 'development' etc.)
 });
 
+console.log('SENTRY_DSN:', process.env.SENTRY_DSN);
+
+
 // Attach the Sentry request handler middleware
 /* This middleware automatically captures and reports all incoming HTTP requests to Sentry. 
    It ensures that Sentry starts tracking the request as soon as it hits the server. */
-app.use(Sentry.Handlers.requestHandler());//requestHandler() is a built-in middleware that automatically tracks incoming requests. It creates a trace for each incoming request and keeps track of key request-related information like headers, route paths, etc.
+
+/*    Modify your index.js to ensure that requestHandler() is available before using it. This way, the app won’t crash if it's missing: */
+   if (Sentry.Handlers?.requestHandler) {
+    app.use(Sentry.Handlers.requestHandler());
+  }
+  //requestHandler() is a built-in middleware that automatically tracks incoming requests. It creates a trace for each incoming request and keeps track of key request-related information like headers, route paths, etc.
 
 //---------------------------
 // Standard Middleware

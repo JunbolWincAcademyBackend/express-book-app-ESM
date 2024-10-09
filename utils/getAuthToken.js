@@ -17,6 +17,7 @@ async function getAuthToken() {
 
         // Parse the response to JSON
         const data = await response.json();
+        console.log('Auth0 Token Response:', data); // ✅ Log the full Auth0 token response
 
         // Return the access token
         return data.access_token;
